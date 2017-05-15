@@ -5,7 +5,7 @@
   },
   "apps": [
     {
-      "root": "src",
+      "root": "src/client",
       "outDir": "dist",
       "assets": [
         "assets",
@@ -17,7 +17,6 @@
       "test": "test.ts",
       "tsconfig": "tsconfig.app.json",
       "testTsconfig": "tsconfig.spec.json",
-      "prefix": "app",
       "styles": [
         "styles.css"
       ],
@@ -36,10 +35,10 @@
   },
   "lint": [
     {
-      "project": "src/tsconfig.app.json"
+      "project": "src/client/tsconfig.app.json"
     },
     {
-      "project": "src/tsconfig.spec.json"
+      "project": "src/client/tsconfig.spec.json"
     },
     {
       "project": "e2e/tsconfig.e2e.json"
