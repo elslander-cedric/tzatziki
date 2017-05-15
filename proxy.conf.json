@@ -1,0 +1,11 @@
+{
+  "/ws": {
+    "target": {
+      "host": "localhost",
+      "port": 1445
+    },
+    "ws": true,
+    "logLevel": "debug",
+    "secure": false
+  }
+}

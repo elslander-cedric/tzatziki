@@ -1,11 +1,11 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
   "lib": [
     "es2016",
     "dom"
   ],
-    "outDir": "../out-tsc/app",
+    "outDir": "../../dist/out-tsc-client",
     "target": "es5",
     "module": "es2015",
     "baseUrl": "",

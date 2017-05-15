@@ -1,0 +1,15 @@
+<md-input-container floatPlaceholder="never" type="text">
+  <input
+    mdInput
+    placeholder="Search by Author or Title"
+    (input)="search($event.target.value)">
+</md-input-container>
+
+<div *ngFor='let book of books | async' fxLayout='column'>
+  <div fxLayout='row' ngFlex='100%'>
+    <button md-icon-button (click)="add(book)">
+      <md-icon>file_download</md-icon>
+    </button>
+    <div ngClass='book'>{{ book.name }}</div>
+  </div>
+</div>

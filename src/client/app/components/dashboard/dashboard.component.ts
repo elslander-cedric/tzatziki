@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { EbookFormatConverterService } from '../../services/ebook-format-converter.service';
 
 @Component({
-  selector: 'app-dashboard',
+  selector: 'dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })

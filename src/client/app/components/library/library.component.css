@@ -1,0 +1,16 @@
+.title {
+  font: bold 0.5em Verdana;
+}
+
+.author {
+  font: italic 0.3em Verdana;
+}
+
+.cover {
+  width: 100px;
+  height: auto;
+}
+
+button, md-icon {
+  position: absolute;
+}

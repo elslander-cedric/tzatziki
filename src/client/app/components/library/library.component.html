@@ -1,0 +1,20 @@
+
+<h3>Library</h3>
+
+<md-input-container type="text">
+  <input #query mdInput
+  placeholder="Enter title or author">
+</md-input-container>
+
+<md-grid-list cols="2" rowHeight="1:1">
+  <md-grid-tile *ngFor="let book of books | bookFilter:query.value">
+    <div ngClass='book'>
+      <img ngClass='cover' src="{{ book.cover }}">
+      <button ngClass='book-share' md-icon-button (click)="share(book)">
+        <md-icon>share</md-icon>
+      </button>
+      <!-- <div ngClass='title'>{{ book.title }}</div>
+      <div ngClass='author'>{{ book.author }}</div> -->
+    </div>
+  </md-grid-tile>
+</md-grid-list>
