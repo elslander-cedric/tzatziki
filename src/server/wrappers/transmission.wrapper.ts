@@ -27,9 +27,9 @@ export class TransmissionWrapper {
       if(err) {
         console.error(err);
       } else {
-        fs.createReadStream(`${this.config.get('downloadsdir')}/${book.title}`).pipe(
-          fs.createWriteStream(`${this.config.get('booksdir')}/${book.title}`));
-        }
+        //fs.createReadStream(`${this.config.get('downloadsdir')}/${book.title}`).pipe(
+        //  fs.createWriteStream(`${this.config.get('booksdir')}/${book.title}`));
+      }
     });
   }
 

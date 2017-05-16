@@ -19,7 +19,7 @@ export class LocalEBookObserver {
   }
 
   public onEbookAdded(): Observable<string> {
-    let watchdir = this.config.get('homedir');
+    let watchdir = this.config.get('downloadsdir');
     console.log('start watching %s', watchdir);
 
     return Observable.create((observer: Observer<string>) => {

@@ -13,8 +13,14 @@
     "run-server": "node dist/out-tsc-server/server.js",
     "start-server": "nodemon --watch 'src/server/' -e ts --exec 'npm run compile-server && npm run run-server'",
     "start-server-ts": "nodemon --watch 'src/server/' --ignore 'src/server/**/*.spec.ts' --exec ts-node -- src/server/server.ts",
-    "bundle-server-prod": "webpack --config webpack.server-config.js",
-    "start-client-prod": "ng serve --proxy-config proxy.conf.json"
+    "start-client-prod": "ng serve --proxy-config proxy.conf.json",
+    "bundle": "npm run bundle-prod",
+    "bundle-test": "npm run bundle-client-test && npm run bundle-server-test",
+    "bundle-prod": "npm run bundle-client-prod && npm run bundle-server-prod",
+    "bundle-client-test": "ng build",
+    "bundle-client-prod": "ng build --prod --env=prod --aot && gulp compress",
+    "bundle-server-test": "webpack --config webpack.server-config.js",
+    "bundle-server-prod": "webpack --config webpack.server-config.js"
   },
   "private": true,
   "dependencies": {
@@ -33,6 +39,8 @@
     "chokidar": "^1.6.1",
     "cloudconvert": "^1.1.1",
     "core-js": "^2.4.1",
+    "gulp": "^3.9.1",
+    "gulp-gzip": "^1.4.0",
     "hammerjs": "^2.0.8",
     "nodemailer": "^4.0.1",
     "rxjs": "^5.3.0",

@@ -1,5 +1,7 @@
 import * as ws from 'ws';
 
+import { Server } from "http";
+
 import { Book } from '../shared/book';
 import { Config } from '../shared/config';
 import { PirateBayService } from './piratebay.service';
@@ -11,7 +13,9 @@ export class TorrentService {
   private piratebayService : PirateBayService;
   private transmissionwrappper : TransmissionWrapper;
 
-  constructor(private config : Config){
+  constructor(
+    private httpServer: Server,
+    private config : Config){
     this.piratebayService = new PirateBayService();
     this.transmissionwrappper = new TransmissionWrapper(config);
   }
@@ -19,9 +23,7 @@ export class TorrentService {
   public start() : void {
     console.log("starting ws server ...");
 
-    this.server = new ws.Server({
-      port: this.config.get('port')
-    });
+    this.server = new ws.Server({ server: this.httpServer });
 
     this.server.on('connection', (websocket : ws.WebSocket) => {
       console.log(`connection from ${websocket}`);
