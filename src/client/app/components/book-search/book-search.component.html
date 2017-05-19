@@ -6,10 +6,13 @@
 </md-input-container>
 
 <div *ngFor='let book of books | async' fxLayout='column'>
-  <div fxLayout='row' ngFlex='100%'>
+  <div ngClass='book' fxLayout='row'>
     <button md-icon-button (click)="add(book)">
       <md-icon>file_download</md-icon>
     </button>
-    <div ngClass='book'>{{ book.name }}</div>
+    <div fxLayout='column' fxLayoutAlign='start|center'>
+      <div ngClass='title' fxFlex>{{ book.title }}</div>
+      <div ngClass='author' >{{ book.author }}</div>
+    </div>
   </div>
 </div>

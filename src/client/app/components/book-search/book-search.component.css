@@ -5,3 +5,14 @@ md-input-container {
 .book {
   font: 1em Verdana;
 }
+
+.title {
+  /*font-weight: bold;*/
+  color: #2266CC;
+}
+
+.author {
+  font: 0.9em Verdana;
+  font-style: italic;
+  color: #112288;
+}

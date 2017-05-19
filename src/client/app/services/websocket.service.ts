@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
 
 @Injectable()
-export class TorrentService {
+export class WebSocketService {
 
   private ws : WebSocket;
 

@@ -12,7 +12,7 @@ import { EbookFormatConverterService } from './services/ebook-format-converter.s
 import { LibraryComponent } from './components/library/library.component';
 import { BookFilterPipe } from './pipes/book-filter.pipe';
 import { BookSearchComponent } from './components/book-search/book-search.component';
-import { TorrentService } from './services/torrent.service';
+import { WebSocketService } from './services/websocket.service';
 
 @NgModule({
   declarations: [
@@ -30,7 +30,7 @@ import { TorrentService } from './services/torrent.service';
     MaterialModule,
     FlexLayoutModule
   ],
-  providers: [ EbookFormatConverterService, TorrentService ],
+  providers: [ EbookFormatConverterService, WebSocketService ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }

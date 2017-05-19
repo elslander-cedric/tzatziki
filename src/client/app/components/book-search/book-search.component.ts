@@ -10,7 +10,7 @@ import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/toPromise';
 
-import { TorrentService } from '../../services/torrent.service';
+import { WebSocketService } from '../../services/websocket.service';
 import { Book } from '../../shared/book';
 
 @Component({
@@ -23,7 +23,7 @@ export class BookSearchComponent implements OnInit {
   private searchTermStream = new Subject<string>();
 
   constructor(
-    private torrentService : TorrentService){};
+    private websocketService : WebSocketService){};
 
   ngOnInit() {}
 
@@ -32,17 +32,21 @@ export class BookSearchComponent implements OnInit {
   }
 
   public books : Observable<Array<Book>> =  this.searchTermStream
-    .debounceTime(200)
+    .debounceTime(800)
     .distinctUntilChanged()
-    .switchMap(term => this.torrentService.send({
-      action: 'search',
-      term: term
-    }));
+    .switchMap(term =>
+      this.websocketService.send({
+        action: 'search',
+        term: term
+      }).catch(() => {
+        return Observable.of([]);
+      })
+    );
 
   public add(book : Book) : Promise<any> {
     console.log("add book:", book);
 
-    return this.torrentService
+    return this.websocketService
       .send({ action: 'add', book: book})
       .toPromise()
       .then(() => console.log("successfully added book: %s", book))

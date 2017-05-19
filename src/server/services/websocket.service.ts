@@ -6,18 +6,21 @@ import { Book } from '../shared/book';
 import { Config } from '../shared/config';
 import { PirateBayService } from './piratebay.service';
 import { TransmissionWrapper } from '../wrappers/transmission.wrapper';
+import { Goodreads } from './goodreads.service';
 
-export class TorrentService {
+export class WebSocketService {
 
   private server : ws.Server;
   private piratebayService : PirateBayService;
   private transmissionwrappper : TransmissionWrapper;
+  private goodreads : Goodreads;
 
   constructor(
     private httpServer: Server,
     private config : Config){
     this.piratebayService = new PirateBayService();
     this.transmissionwrappper = new TransmissionWrapper(config);
+    this.goodreads = new Goodreads(config);
   }
 
   public start() : void {
@@ -39,19 +42,22 @@ export class TorrentService {
 
         switch(data.action) {
           case 'search':
-            this.piratebayService
+            this.goodreads
               .search(data.term)
+              .toPromise()
               .then((result) => websocket.send(JSON.stringify({ result: result })))
               .catch((err) => websocket.send(JSON.stringify({ err: err })));
 
             break;
 
           case 'add':
-            this.transmissionwrappper
-              .add({
-                  title: data.book.name,
-                  url: data.book.magnetLink
-                } as Book)
+            this.piratebayService
+              .search(`${data.book.title} ${data.book.author}`)
+              .then((results) => this.transmissionwrappper
+                .add({
+                    title: results[0].name,
+                    url: results[0].magnetLink
+                  } as Book))
               .then((result) => websocket.send(JSON.stringify({ result: result })))
               .catch((err) => websocket.send(JSON.stringify({ err: err })));
         }

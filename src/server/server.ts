@@ -8,7 +8,7 @@ import { IncomingMessage, ServerResponse } from "http";
 
 import { Config } from './shared/config';
 import { CalibreWrapper } from './wrappers/calibre.wrapper';
-import { TorrentService } from './services/torrent.service';
+import { WebSocketService } from './services/websocket.service';
 import { EmailService } from './services/email.service';
 import { LocalEBookObserver } from './local-ebook-observer';
 
@@ -95,7 +95,7 @@ export class Server {
       }
     });
 
-    new TorrentService(
+    new WebSocketService(
       this.server,
       config
     ).start();
