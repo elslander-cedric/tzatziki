@@ -7,6 +7,7 @@ import { Observer } from 'rxjs/Observer';
 export class WebSocketService {
 
   private ws : WebSocket;
+  private pendingRequests = [];
 
   constructor(private http: Http) {
     this.connect();
@@ -15,37 +16,27 @@ export class WebSocketService {
   public connect() : void {
     this.ws = new WebSocket(`ws://${location.host}/ws`);
 
-    // TODO-FIXME : this is a workaround, to force http upgrade first %(
-    this.http.get(`http://${location.host}/ws`)
-      .toPromise()
-      .then(() => console.log("ws http sent"))
-      .catch(() => console.log("ws http error"));
-
-    console.log("connect ws")
-
-    this.ws.onerror = (err) => console.log(`websocket onerror ${err}`);
-    this.ws.onopen = () => console.log(`websocket onopen`);
-
     this.ws.onclose = (close : CloseEvent) => {
-      console.log(`websocket onclose`);
       setTimeout(() => { this.connect() }, 1000);
     }
+
+    this.ws.onmessage = (message : MessageEvent) => {
+      let data = JSON.parse(message.data);
+      let observer = this.pendingRequests[data.requestId];
+
+      if(data.err) {
+        observer.error(data.err);
+      } else {
+        observer.next(data.result);
+        observer.complete();
+      }
+    };
   }
 
   public send(data) : Observable<any> {
-    return Observable.create((observer: Observer<string>) => {
-      this.ws.onmessage = (message : MessageEvent) => {
-        console.log(`websocket onmessage: ${message}`);
-
-        let data = JSON.parse(message.data);
-
-        if(data.err) {
-          observer.error(data.err);
-        } else {
-          observer.next(data.result);
-        }
-      };
-
+    return Observable.create((observer: Observer<any>) => {
+      this.pendingRequests[data.requestId = Math.random()] = observer;
+      setTimeout(() => { observer.error("Error timeout"); }, 10000);
       this.ws.send(JSON.stringify(data));
     })
   }

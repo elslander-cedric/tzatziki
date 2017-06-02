@@ -1,16 +1,10 @@
-.title {
-  font: bold 0.5em Verdana;
-}
-
-.author {
-  font: italic 0.3em Verdana;
-}
-
 .cover {
-  width: 100px;
-  height: auto;
+  /*width: 100px;
+  height: auto;*/
 }
 
-button, md-icon {
+img.download {
   position: absolute;
+  opacity: .4;
+  /*height: 40px;*/
 }

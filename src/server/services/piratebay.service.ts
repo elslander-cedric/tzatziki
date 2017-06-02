@@ -5,21 +5,15 @@ import { Promise } from 'bluebird';
 export class PirateBayService {
 
   public search(term: string): Promise<any> {
-    console.log('search piratebay for:', term);
+    let searchTerm = term.replace(/\(.*\)/,'');
 
-    return ThePirateBay.search(term, {
+    return ThePirateBay.search(searchTerm, {
       category: 'other',
       subcategory: { name: "E-books"},
-      filter: {
-          verified: false
-      },
+      filter: { verified: false },
       page: 0,
       orderBy: 'leeches',
       sortBy: 'desc'
-    })
-    .then(results => {
-      return new Promise.resolve(results);
-    })
-    .catch(err => console.log(err));
+    });
   }
 }

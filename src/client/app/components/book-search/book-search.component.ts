@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MdSnackBar } from '@angular/material';
 import { Observable }        from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
@@ -23,7 +24,8 @@ export class BookSearchComponent implements OnInit {
   private searchTermStream = new Subject<string>();
 
   constructor(
-    private websocketService : WebSocketService){};
+    private websocketService : WebSocketService,
+    public snackBar: MdSnackBar){};
 
   ngOnInit() {}
 
@@ -43,13 +45,20 @@ export class BookSearchComponent implements OnInit {
       })
     );
 
-  public add(book : Book) : Promise<any> {
-    console.log("add book:", book);
-
+  public download(book : Book) : Promise<any> {
+    book.downloading = true;
     return this.websocketService
-      .send({ action: 'add', book: book})
+      .send({ action: 'download', book: book})
       .toPromise()
-      .then(() => console.log("successfully added book: %s", book))
-      .catch((err : never) => console.error(`error occured while adding book: ${err}`));
+      .then(() => {
+        book.downloading = false;
+        this.snackBar.open(`downloading ${book.title}`, '', {
+          duration: 3000
+        });
+      })
+      .catch((err : never) => {
+        book.downloading = false;
+        this.snackBar.open(err, '', { duration: 3000 });
+      });
   }
 }

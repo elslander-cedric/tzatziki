@@ -21,9 +21,7 @@ export class TransmissionWrapper {
   }
 
   public onEbookDownloaded(book : Book) {
-    console.log('wait for book: ', book);
     this.transmission.waitForState(book.id, 5 /*SEED_WAIT*/, (err, arg) => {
-      console.log('wait end: ', arg);
       if(err) {
         console.error(err);
       } else {
@@ -34,14 +32,12 @@ export class TransmissionWrapper {
   }
 
   public add(book : Book) : Promise<any> {
-    console.log("add book", book.title);
     let that = this;
     return new Promise((resolve, reject) => {
       this.transmission.addUrl(book.url, function(err, result) {
           if (err) {
-            reject(err);
+            reject('could not download book');
           } else {
-            console.log('book: ', result);
             that.books.push({
               id: result.id,
               title: result.name

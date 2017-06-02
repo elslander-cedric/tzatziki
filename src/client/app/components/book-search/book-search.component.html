@@ -1,18 +1,25 @@
 <md-input-container floatPlaceholder="never" type="text">
-  <input
-    mdInput
+  <input mdInput
     placeholder="Search by Author or Title"
     (input)="search($event.target.value)">
 </md-input-container>
 
-<div *ngFor='let book of books | async' fxLayout='column'>
-  <div ngClass='book' fxLayout='row'>
-    <button md-icon-button (click)="add(book)">
-      <md-icon>file_download</md-icon>
-    </button>
-    <div fxLayout='column' fxLayoutAlign='start|center'>
-      <div ngClass='title' fxFlex>{{ book.title }}</div>
-      <div ngClass='author' >{{ book.author }}</div>
-    </div>
-  </div>
+<div ngClass='canvas'>
+  <md-grid-list cols="3" rowHeight="1:1.7">
+    <md-grid-tile *ngFor="let book of books | async">
+      <div ngClass='book'>
+        <md-spinner [hidden]="!book.downloading" mode="indeterminate"></md-spinner>
+        <img ngClass='cover' src="{{ book.cover }}" (click)="download(book)">
+        <ngb-rating [starTemplate]="t" max="5" readonly='true' [(rate)]="book.rating"></ngb-rating>
+      </div>
+    </md-grid-tile>
+  </md-grid-list>
 </div>
+
+<ng-template #t let-fill="fill">
+  <span *ngIf="fill === 100" class="star full">&#9733;</span>
+  <span *ngIf="fill === 0" class="star empty">&#9733;</span>
+  <span *ngIf="fill < 100 && fill > 0" class="star empty">
+    <span class="star partial" [style.width.%]="fill">&#9733;</span>&#9733;
+  </span>
+</ng-template>

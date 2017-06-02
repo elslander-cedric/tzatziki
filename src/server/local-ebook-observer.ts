@@ -20,13 +20,10 @@ export class LocalEBookObserver {
 
   public onEbookAdded(): Observable<string> {
     let watchdir = this.config.get('downloadsdir');
-    console.log('start watching %s', watchdir);
 
     return Observable.create((observer: Observer<string>) => {
       let watcher = chokidar.watch(watchdir, { ignored: /^\./, persistent: true })
       .on('add', (filename) => {
-        console.log('%s added', filename);
-
         if (!filename.endsWith('.epub') && !filename.endsWith('.mobi')) {
           console.error("not an ebook");
         } else {

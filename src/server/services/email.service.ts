@@ -27,7 +27,6 @@ export class EmailService {
     };
 
     return new Promise((resolve, reject) => {
-      console.log('sending email');
       transporter.sendMail(message, (error, info) => {
         if (error) {
           reject(error);

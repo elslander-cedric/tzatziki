@@ -1,5 +1,18 @@
 md-input-container {
-  width: 100%;
+  margin-left: 5%;
+  width: 90%;
+}
+
+md-spinner {
+  position: absolute;
+  top: 15%;
+  left: 20%;
+  width: 50%;
+}
+
+.canvas {
+  margin-left: 5%;
+  width: 90%;
 }
 
 .book {
@@ -15,4 +28,25 @@ md-input-container {
   font: 0.9em Verdana;
   font-style: italic;
   color: #112288;
+}
+
+.star {
+  position: relative;
+  display: inline-block;
+  font-size: 1rem;
+}
+
+.star.full {
+  color: #2266CC;
+}
+
+.star.empty {
+  color: #d3d3d3;
+}
+
+.star.partial {
+  position: absolute;
+  display: inline-block;
+  overflow: hidden;
+  color: #2266CC;
 }

@@ -6,10 +6,14 @@ import * as mime from 'mime';
 
 import { IncomingMessage, ServerResponse } from "http";
 
+import { Book } from './shared/book';
 import { Config } from './shared/config';
 import { CalibreWrapper } from './wrappers/calibre.wrapper';
+import { TransmissionWrapper } from './wrappers/transmission.wrapper';
 import { WebSocketService } from './services/websocket.service';
 import { EmailService } from './services/email.service';
+import { Goodreads } from './services/goodreads.service';
+import { PirateBayService } from './services/piratebay.service';
 import { LocalEBookObserver } from './local-ebook-observer';
 
 export class Server {
@@ -26,6 +30,37 @@ export class Server {
     const observer : LocalEBookObserver = new LocalEBookObserver(config);
     const calibre : CalibreWrapper = new CalibreWrapper();
     const email : EmailService = new EmailService(config);
+    const goodreads : Goodreads = new Goodreads(config);
+    const piratebayService : PirateBayService = new PirateBayService();
+    const transmissionwrappper : TransmissionWrapper = new TransmissionWrapper(config);
+
+    let date : number = Date.now();
+
+    setInterval(() => {
+      goodreads.newBooks(date)
+        .toPromise()
+        .then((books : Array<Book>) => {
+          books.forEach((book : Book) => {
+            piratebayService
+              .search(`${book.title} ${book.author}`)
+              .then((results) => {
+                if(results.length === 0) {
+                  return Promise.reject('No torrents found');
+                } else {
+                  return transmissionwrappper
+                    .add({
+                      title: results[0].name,
+                      url: results[0].magnetLink
+                    } as Book);
+                }
+              })
+              .then(() => console.log("book added"))
+              .catch(err => console.error(err));
+          });
+          date = Date.now();
+        })
+        .catch(err => console.error(err))
+    }, 60000)
 
     observer
       .onEbookAdded()
@@ -97,7 +132,10 @@ export class Server {
 
     new WebSocketService(
       this.server,
-      config
+      config,
+      goodreads,
+      piratebayService,
+      transmissionwrappper
     ).start();
 
     this.server.listen(config.get("port"));

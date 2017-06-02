@@ -14,7 +14,9 @@ export class Book {
   private _publisher : string;
   private _description : string;
   private _cover: string;
-
+  private _downloading : boolean;
+  private _date_added : string;
+  
   public constructor() {}
 
   public get author() {
@@ -121,4 +123,19 @@ export class Book {
     this._cover = cover;
   }
 
+  public get downloading() {
+    return this._downloading;
+  }
+
+  public set downloading(downloading : boolean) {
+    this._downloading = downloading;
+  }
+
+  public get date_added() : string {
+    return this._date_added;
+  }
+
+  public set date_added(date_added : string) {
+    this._date_added = date_added;
+  }
 }
