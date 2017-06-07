@@ -1,4 +1,4 @@
-import * as ws from 'ws';
+import * as sockjs from 'sockjs';
 
 import { Server } from "http";
 
@@ -10,7 +10,7 @@ import { Goodreads } from './goodreads.service';
 
 export class WebSocketService {
 
-  private server : ws.Server;
+  private server : sockjs.Server;
 
   constructor(
     private httpServer: Server,
@@ -22,10 +22,10 @@ export class WebSocketService {
   public start() : void {
     console.log("starting ws server ...");
 
-    this.server = new ws.Server({ server: this.httpServer });
+    this.server = new sockjs.createServer();
 
-    this.server.on('connection', (websocket : ws.WebSocket) => {
-      websocket.on('message', (message) => {
+    this.server.on('connection', (websocket : sockjs.WebSocket) => {
+      websocket.on('data', (message) => {
         let data = JSON.parse(message);
 
         switch(data.action) {
@@ -33,13 +33,13 @@ export class WebSocketService {
             this.goodreads
               .search(data.term)
               .toPromise()
-              .then((result) => websocket.send(
+              .then((result) => websocket.write(
                 JSON.stringify({
                   requestId: data.requestId,
                   result: result
                 })
               ))
-              .catch((err) => websocket.send(
+              .catch((err) => websocket.write(
                 JSON.stringify({
                   requestId: data.requestId,
                   err: err
@@ -62,13 +62,13 @@ export class WebSocketService {
                     } as Book);
                 }
               })
-              .then((result) => websocket.send(
+              .then((result) => websocket.write(
                 JSON.stringify({
                   requestId: data.requestId,
                   result: result
                 })
               ))
-              .catch((err) => websocket.send(
+              .catch((err) => websocket.write(
                 JSON.stringify({
                   requestId: data.requestId,
                   err: err
@@ -77,5 +77,7 @@ export class WebSocketService {
         }
       });
     });
+
+    this.server.installHandlers(this.httpServer, { prefix: '/ws' });
   }
 }

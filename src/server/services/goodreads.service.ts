@@ -78,7 +78,7 @@ export class Goodreads {
               } as Book
             });
 
-            observer.next(books);
+            observer.next(books.slice(0, 9));
             observer.complete();
           }
         });

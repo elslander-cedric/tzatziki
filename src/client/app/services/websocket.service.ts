@@ -3,10 +3,12 @@ import { Http } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
 
+import * as SockJS from 'sockjs-client';
+
 @Injectable()
 export class WebSocketService {
 
-  private ws : WebSocket;
+  private ws : any; //SockJS;//WebSocket;
   private pendingRequests = [];
 
   constructor(private http: Http) {
@@ -14,7 +16,8 @@ export class WebSocketService {
   }
 
   public connect() : void {
-    this.ws = new WebSocket(`ws://${location.host}/ws`);
+    // this.ws = new WebSocket(`ws://${location.host}/ws`);
+    this.ws = new SockJS(`http://${location.host}/ws`);
 
     this.ws.onclose = (close : CloseEvent) => {
       setTimeout(() => { this.connect() }, 1000);
