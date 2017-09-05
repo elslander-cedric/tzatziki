@@ -1,17 +1,99 @@
 import * as http from 'http';
 import * as querystring from 'querystring';
 import * as xml2js from 'xml2js';
+import * as oauth from 'oauth';
 
 import { Observable, Observer } from 'rxjs/Rx';
+import { Promise } from 'bluebird';
 
 import { Config } from '../shared/config';
 import { Book } from '../shared/book';
+import { TransmissionWrapper } from '../wrappers/transmission.wrapper';
+import { PirateBayService } from './piratebay.service';
 
 export class Goodreads {
 
-  constructor(private config: Config) {}
+  private oa : oauth;
 
-  public newBooks(date : number) : Observable<Array<Book>> {
+  constructor(
+    private config: Config,
+    private pirateBayService : PirateBayService,
+    private transmissionWrapper : TransmissionWrapper) {}
+
+  public init() : Goodreads {
+    this.watchNewToRead();
+    this.oAuthInit();
+
+    return this;
+  }
+
+  public oAuthInit() : void {
+    this.oa = new oauth(
+      'https://goodreads.com/oauth/request_token',
+      'https://goodreads.com/oauth/access_token',
+      this.config.get('goodreadsAPIKey'),
+      this.config.get('goodreadsAPISecret'),
+      '1.0A',
+      `http://localhost:${this.config.get('port')}/callback`,
+      'HMAC-SHA1'
+    );
+  }
+
+  public oAuthAuthorize() : Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.oa.getOAuthRequestToken((error, oAuthToken, oAuthTokenSecret, results) => {
+        console.log("getOAuthRequestToken error:", error);
+        console.log("getOAuthRequestToken oAuthToken:", oAuthToken);
+        console.log("getOAuthRequestToken oAuthTokenSecret:", oAuthTokenSecret);
+        console.log("getOAuthRequestToken results:", results);
+
+        if (error) {
+          reject(error);
+        } else {
+          resolve(`https://goodreads.com/oauth/authorize?authorize?mobile=1&oauth_token=${oAuthToken}&oauth_callback=${this.oa._authorize_callback}`);
+        }
+      });
+    });
+  }
+
+  public oAuthAuthorizeCallback(oAuthToken, oAuthTokenSecret, authorize) : Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.oa.getOAuthAccessToken(oAuthToken, oAuthTokenSecret, authorize,
+        (error, oAuthAccessToken,oAuthAccessTokenSecret, results) => {
+          if(error) {
+            reject(error)
+          } else {
+
+            //example
+            this.oa.get('http://www.goodreads.com/api/auth_user', oAuthToken, oAuthTokenSecret, (error, data, response) => {
+              if (error) {
+                reject(error);
+              } else {
+                // do something with data/response
+              }
+            });
+          }
+      });
+    });
+  }
+
+  public watchNewToRead() : Observable<Array<Book>> {
+    return new Observable((observer : Observer<Array<Book>>) => {
+      let date : number = Date.now();
+
+      setInterval(() => {
+        this.newToRead(date)
+          .toPromise()
+          .then((books : Array<Book>) => {
+            observer.next(books);
+            date = Date.now();
+          })
+          .catch(err => console.error(err))
+      }, 60000);
+    });
+  }
+
+  public newToRead(date : number) : Observable<Array<Book>> {
     return this.toRead()
       .map((books : Array<Book>) => {
         return books.filter((book : Book) => {

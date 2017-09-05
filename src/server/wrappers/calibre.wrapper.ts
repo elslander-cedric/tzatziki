@@ -2,7 +2,11 @@ import * as child_process from 'child_process';
 
 import { Observable, Observer } from 'rxjs/Rx';
 
+import { Config } from '../shared/config';
+
 export class CalibreWrapper {
+
+  constructor(private config : Config){}
 
   public convert(path : string) : Observable<string|void> {
     const command = `ebook-convert`;
@@ -13,7 +17,12 @@ export class CalibreWrapper {
         observer.next(path);
         observer.complete();
       } else {
-        child_process.spawn(command, [path, path.replace('.epub', '.mobi')], {
+        child_process.spawn(command, [
+          path,
+          path.replace('.epub', '.mobi'),
+          '--output-profile',
+          this.config.get('calibre-profile')
+        ], {
             stdio: "inherit",
             detached: false,
             shell: false

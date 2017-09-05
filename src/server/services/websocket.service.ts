@@ -25,6 +25,7 @@ export class WebSocketService {
     this.server = new sockjs.createServer();
 
     this.server.on('connection', (websocket : sockjs.WebSocket) => {
+
       websocket.on('data', (message) => {
         let data = JSON.parse(message);
 
