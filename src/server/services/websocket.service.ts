@@ -75,6 +75,8 @@ export class WebSocketService {
                   err: err
                 })
               ));
+
+            break;
         }
       });
     });

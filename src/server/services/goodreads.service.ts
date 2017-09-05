@@ -22,7 +22,7 @@ export class Goodreads {
 
   public init() : Goodreads {
     this.watchNewToRead();
-    this.oAuthInit();
+    //this.oAuthInit();
 
     return this;
   }
@@ -34,7 +34,7 @@ export class Goodreads {
       this.config.get('goodreadsAPIKey'),
       this.config.get('goodreadsAPISecret'),
       '1.0A',
-      `http://localhost:${this.config.get('port')}/callback`,
+      'http://localhost:' + this.config.get('port') + '/callback',
       'HMAC-SHA1'
     );
   }

@@ -17,6 +17,8 @@ export class Book {
   private _url : string;
   private _downloading : boolean;
   private _date_added : string;
+  private _state : string;
+  private _file : string;
 
   public constructor() {}
 
@@ -154,5 +156,21 @@ export class Book {
 
   public set date_added(date_added : string) {
     this._date_added = date_added;
+  }
+
+  public get state() : string {
+    return this._state;
+  }
+
+  public set state(state : string) {
+    this._state = state;
+  }
+
+  public get file() : string {
+    return this._file;
+  }
+
+  public set file(file : string) {
+    this._file = file;
   }
 }

@@ -1,6 +1,6 @@
 
 export class Book {
-
+  private _id : string;
   private _author : string;
   private _title : string;
   private _language : string;
@@ -14,10 +14,21 @@ export class Book {
   private _publisher : string;
   private _description : string;
   private _cover: string;
+  private _url : string;
   private _downloading : boolean;
   private _date_added : string;
+  private _state : string;
+  private _file : string;
   
   public constructor() {}
+
+  public get id() {
+    return this._id;
+  }
+
+  public set(id : string) {
+    this._id = id;
+  }
 
   public get author() {
     return this._author;
@@ -123,6 +134,14 @@ export class Book {
     this._cover = cover;
   }
 
+  public get url() {
+    return this._url;
+  }
+
+  public set url(url : string) {
+    this._url = url;
+  }
+
   public get downloading() {
     return this._downloading;
   }
@@ -137,5 +156,21 @@ export class Book {
 
   public set date_added(date_added : string) {
     this._date_added = date_added;
+  }
+
+  public get state() : string {
+    return this._state;
+  }
+
+  public set state(state : string) {
+    this._state = state;
+  }
+
+  public get file() : string {
+    return this._file;
+  }
+
+  public set file(file : string) {
+    this._file = file;
   }
 }

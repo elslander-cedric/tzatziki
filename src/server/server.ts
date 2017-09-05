@@ -32,6 +32,15 @@ export class Server {
     const goodreads : Goodreads = new Goodreads(config, pirateBayService, transmissionWrapper).init();
     const httpGetRequestHandler : HttpGetRequestHandler = new HttpGetRequestHandler();
 
+    transmissionWrapper.subscribeForEvents((book : Book) => {
+      if(book.state === 'download_succeeded') {
+        calibre.convert(book)
+          .toPromise()
+          .then((book : Book) => email.send(book))
+          .catch((err) => console.error(err));
+      }
+    });
+
     goodreads.watchNewToRead()
       .subscribe((books : Array<Book>) => {
         books.forEach((book : Book) => {
@@ -53,17 +62,19 @@ export class Server {
         });
       });
 
-    goodreads.oAuthAuthorize()
-      .then((authUrl) => { /* TODO-FIXME */})
-      .catch(err => console.error(err));
+    // goodreads.oAuthAuthorize()
+    //   .then((authUrl) => { /* TODO-FIXME */})
+    //   .catch(err => console.error(err));
 
+    /*
     observer
       .onEbookAdded()
       .concatMap((ebook : string) => calibre.convert(ebook))
       .concatMap((ebook : string) => email.send(ebook.replace('epub', 'mobi')))
       .toPromise()
       .then()
-      .catch((err) => console.error(err));;
+      .catch((err) => console.error(err));
+    */
 
     this.server = http.createServer((request: IncomingMessage, response: ServerResponse) => {
       httpGetRequestHandler.handle(request, response);

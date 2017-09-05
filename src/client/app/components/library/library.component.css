@@ -1,10 +1,23 @@
-.cover {
-  /*width: 100px;
-  height: auto;*/
+md-input-container {
+  margin-top: 5%;
+  margin-left: 5%;
+  width: 90%;
+}
+
+.canvas {
+  margin-left: 5%;
+  width: 90%;
+}
+
+md-grid-tile {
+  box-shadow: 0px 0px 5px #555555;
 }
 
 img.download {
   position: absolute;
-  opacity: .4;
-  /*height: 40px;*/
+  opacity: 0.6;
+  background-color: white;
+  width: 30%;
+  left: 70%;
+  top: 0%;
 }

@@ -3,18 +3,20 @@ import * as child_process from 'child_process';
 import { Observable, Observer } from 'rxjs/Rx';
 
 import { Config } from '../shared/config';
+import { Book } from '../shared/book';
 
 export class CalibreWrapper {
 
   constructor(private config : Config){}
 
-  public convert(path : string) : Observable<string|void> {
+  public convert(book : Book) : Observable<Book> {
     const command = `ebook-convert`;
+    let path = book.file;
 
-    return Observable.create((observer: Observer<string>) => {
+    return Observable.create((observer: Observer<Book>) => {
 
       if(!path.endsWith('epub')) {
-        observer.next(path);
+        observer.next(book);
         observer.complete();
       } else {
         child_process.spawn(command, [
@@ -27,7 +29,7 @@ export class CalibreWrapper {
             detached: false,
             shell: false
           }).on('exit', (code, signal) => {
-              observer.next(path);
+              observer.next(book);
               observer.complete();
           }).on('error', (error) => {
               observer.error(error);

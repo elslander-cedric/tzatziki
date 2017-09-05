@@ -3,12 +3,15 @@ import * as nodemailer from 'nodemailer';
 import { Promise } from 'bluebird';
 
 import { Config } from '../shared/config';
+import { Book } from '../shared/book';
 
 export class EmailService {
 
   public constructor(private config : Config) {}
 
-  public send(filepath : string) : Promise<void|string> {
+  public send(book : Book) : Promise<void|string> {
+    let filepath = book.file;
+
     const transporter = nodemailer.createTransport({
       service: this.config.get('emailService'),
       auth: {

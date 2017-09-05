@@ -35,6 +35,8 @@ export class HttpGetRequestHandler {
 
       let filename = path.join(process.cwd(), uri);
 
+      console.log("lookup %s", filename);
+
       fs.exists(filename, function(exists) {
           response.statusCode = exists ? 200 : 404;
 
@@ -51,6 +53,7 @@ export class HttpGetRequestHandler {
               response.setHeader('Content-Type', mime.lookup(filename));
               response.setHeader("Last-Modified", lastModified.toUTCString());
 
+              /*
               let ifModifiedSince = request.headers["if-modified-since"];
 
               if(ifModifiedSince) {
@@ -58,6 +61,7 @@ export class HttpGetRequestHandler {
                   response.statusCode = 304;
                 }
               }
+              */
 
               fs.createReadStream(filename).pipe(response);
             });
